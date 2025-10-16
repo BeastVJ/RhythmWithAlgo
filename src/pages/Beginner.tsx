@@ -10,7 +10,6 @@ const algorithms = [
     description: "Learn how arrays store and access elements in memory",
     difficulty: "Easy",
     time: "5 min",
-    color: "beginner-primary",
   },
   {
     id: "swap-numbers",
@@ -18,7 +17,6 @@ const algorithms = [
     description: "Understand the fundamental swap operation with visual animations",
     difficulty: "Easy",
     time: "3 min",
-    color: "beginner-secondary",
   },
   {
     id: "loops",
@@ -26,7 +24,6 @@ const algorithms = [
     description: "See how loops work with step-by-step visualization",
     difficulty: "Easy",
     time: "7 min",
-    color: "beginner-accent",
   },
   {
     id: "conditionals",
@@ -34,7 +31,6 @@ const algorithms = [
     description: "Visualize decision-making in code with branching paths",
     difficulty: "Easy",
     time: "6 min",
-    color: "beginner-success",
   },
 ];
 
@@ -47,88 +43,57 @@ const resources = [
 
 const Beginner = () => {
   return (
-    <div className="min-h-screen" style={{ background: `hsl(var(--beginner-bg))` }}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link to="/levels">
-          <Button variant="ghost" className="mb-8 text-beginner-text">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Levels
-          </Button>
-        </Link>
+    <div className="min-h-screen px-8 py-12 bg-gray-50">
+      {/* Back Button */}
+      <Link to="/levels">
+        <Button variant="ghost" className="mb-8">
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Levels
+        </Button>
+      </Link>
 
-        <div className="mb-12 text-center">
-          <h1 className="text-4xl sm:text-5xl font-bold mb-4 text-beginner-primary">
-            🌱 Beginner Level
-          </h1>
-          <p className="text-xl text-beginner-text/80 max-w-2xl mx-auto">
-            Start your coding adventure with playful visualizations of fundamental programming concepts
-          </p>
-        </div>
+      {/* Header */}
+      <h1 className="text-4xl font-bold mb-6 text-center">Beginner Level</h1>
+      <p className="mb-12 text-center text-gray-600 max-w-2xl mx-auto">
+        Start your coding adventure with these beginner-friendly visualizations
+      </p>
 
-        {/* Algorithms Grid */}
-        <div className="mb-16">
-          <h2 className="text-2xl font-bold mb-6 text-beginner-text">Available Visualizations</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {algorithms.map((algo) => (
-              <Card 
-                key={algo.id}
-                className="bg-beginner-card border-2 hover:border-beginner-primary transition-all duration-300 hover:shadow-lg hover:-translate-y-1 overflow-hidden group"
-              >
-                <div className={`h-2 bg-${algo.color}`} />
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-3">
-                    <h3 className="text-xl font-bold text-beginner-text">{algo.title}</h3>
-                    <span className="text-xs px-3 py-1 rounded-full bg-beginner-success/20 text-beginner-success font-medium">
-                      {algo.difficulty}
-                    </span>
-                  </div>
-                  
-                  <p className="text-beginner-text/70 mb-4">{algo.description}</p>
-                  
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-beginner-text/60">⏱️ {algo.time}</span>
-                    <Link to={`/visualize/beginner/${algo.id}`}>
-                      <Button size="sm" className="bg-beginner-primary hover:bg-beginner-primary/90 text-white rounded-lg">
-                        <Play className="mr-2 h-4 w-4" />
-                        Visualize
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Learning Resources */}
-        <div className="bg-beginner-card rounded-2xl p-8 border-2 border-beginner-primary/20">
-          <div className="flex items-center mb-6">
-            <BookOpen className="h-6 w-6 text-beginner-primary mr-3" />
-            <h2 className="text-2xl font-bold text-beginner-text">Read More</h2>
-          </div>
-          
-          <p className="text-beginner-text/70 mb-6">
-            Strengthen your fundamentals with these beginner-friendly resources:
-          </p>
-          
-          <div className="grid sm:grid-cols-2 gap-4">
-            {resources.map((resource, index) => (
-              <a
-                key={index}
-                href={resource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center p-4 bg-beginner-primary/5 rounded-xl hover:bg-beginner-primary/10 transition-colors border border-beginner-primary/20 group"
-              >
-                <span className="text-2xl mr-3">📚</span>
-                <span className="text-beginner-text group-hover:text-beginner-primary transition-colors">
-                  {resource.title}
-                </span>
-              </a>
-            ))}
-          </div>
-        </div>
+      {/* Algorithms Grid */}
+      <div className="grid md:grid-cols-2 gap-6 mb-12">
+        {algorithms.map((algo) => (
+          <Card key={algo.id} className="p-6 border hover:shadow-lg hover:-translate-y-1 transition-all">
+            <div className="flex justify-between items-start mb-4">
+              <h2 className="text-xl font-bold">{algo.title}</h2>
+              <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full">{algo.difficulty}</span>
+            </div>
+            <p className="text-gray-600 mb-4">{algo.description}</p>
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-gray-500">{algo.time}</span>
+              <Link to={`/visualize/beginner/${algo.id}`}>
+                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white">
+                  <Play className="mr-2 h-4 w-4" />
+                  Visualize
+                </Button>
+              </Link>
+            </div>
+          </Card>
+        ))}
       </div>
+
+      {/* Learning Resources */}
+      <Card className="p-6 border rounded-xl">
+        <div className="flex items-center mb-4">
+          <BookOpen className="h-5 w-5 text-blue-500 mr-2" />
+          <h2 className="font-bold text-lg">Learn More</h2>
+        </div>
+        <div className="grid sm:grid-cols-2 gap-4">
+          {resources.map((res, idx) => (
+            <a key={idx} href={res.url} target="_blank" rel="noopener noreferrer" className="p-4 bg-gray-100 rounded hover:bg-gray-200 transition-colors">
+              {res.title}
+            </a>
+          ))}
+        </div>
+      </Card>
     </div>
   );
 };

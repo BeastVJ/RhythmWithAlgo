@@ -9,19 +9,18 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         <div 
-          className="absolute inset-0 z-0 opacity-20"
+          className="absolute inset-0 z-0 opacity-15"
           style={{
             backgroundImage: `url(${heroBg})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-accent/10 to-secondary/10 z-0" />
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-32">
           <div className="text-center animate-slide-up">
-            <h1 className="text-5xl sm:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-              AlgoVision
+            <h1 className="text-5xl sm:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text ">
+              RhythmWithAlgo
             </h1>
             <p className="text-xl sm:text-2xl text-foreground/80 mb-4 max-w-3xl mx-auto">
               Master Data Structures & Algorithms through
@@ -52,6 +51,8 @@ const Index = () => {
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
+
+            
             {/* Beginner Card */}
             <Link to="/levels/beginner" className="group">
               <div className="bg-beginner-card border-2 border-beginner-primary/20 rounded-2xl p-8 hover:border-beginner-primary transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
@@ -110,7 +111,7 @@ const Index = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary via-accent to-secondary">
+      <section className="py-20 bg-black">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold text-white mb-6">
             Ready to Visualize Your Learning?

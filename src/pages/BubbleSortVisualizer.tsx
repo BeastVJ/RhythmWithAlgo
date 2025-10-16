@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Play, Pause, RotateCcw, BookOpen } from "lucide-react";
+import { ArrowLeft, Play, Pause, RotateCcw, Square, BookOpen } from "lucide-react";
 
 interface ArrayBar {
   value: number;
@@ -16,6 +16,10 @@ const BubbleSortVisualizer = () => {
   const [comparisons, setComparisons] = useState(0);
   const [swaps, setSwaps] = useState(0);
   const [speed, setSpeed] = useState(500);
+  const [inputValues, setInputValues] = useState<string>("");
+
+  // Reference to stop sorting externally
+  const stopRef = useRef(false);
 
   useEffect(() => {
     generateArray();
@@ -34,12 +38,43 @@ const BubbleSortVisualizer = () => {
     setComparisons(0);
     setSwaps(0);
     setIsSorting(false);
+    stopRef.current = false;
   };
 
   const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputValues(e.target.value);
+  };
+
+  const handleInputSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      const numbers = inputValues
+        .split(",")
+        .map((num) => parseInt(num.trim()))
+        .filter((num) => !isNaN(num));
+
+      if (numbers.length > 0) {
+        const customArray = numbers.map((value) => ({
+          value,
+          color: "hsl(var(--intermediate-primary))",
+        }));
+        setArray(customArray);
+        setComparisons(0);
+        setSwaps(0);
+        stopRef.current = false;
+      }
+    }
+  };
+
+  const stopSorting = () => {
+    stopRef.current = true;
+    setIsSorting(false);
+  };
+
   const bubbleSort = async () => {
     setIsSorting(true);
+    stopRef.current = false;
     const arr = [...array];
     const n = arr.length;
     let totalComparisons = 0;
@@ -47,7 +82,11 @@ const BubbleSortVisualizer = () => {
 
     for (let i = 0; i < n - 1; i++) {
       for (let j = 0; j < n - i - 1; j++) {
-        // Highlight comparing elements
+        if (stopRef.current) {
+          setIsSorting(false);
+          return;
+        }
+
         arr[j].color = "hsl(var(--intermediate-accent))";
         arr[j + 1].color = "hsl(var(--intermediate-accent))";
         setArray([...arr]);
@@ -57,28 +96,23 @@ const BubbleSortVisualizer = () => {
         setComparisons(totalComparisons);
 
         if (arr[j].value > arr[j + 1].value) {
-          // Swap
           [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
           totalSwaps++;
           setSwaps(totalSwaps);
-          
-          // Highlight swapped elements
+
           arr[j].color = "hsl(var(--intermediate-secondary))";
           arr[j + 1].color = "hsl(var(--intermediate-secondary))";
           setArray([...arr]);
           await sleep(speed);
         }
 
-        // Reset colors
         arr[j].color = "hsl(var(--intermediate-primary))";
         arr[j + 1].color = "hsl(var(--intermediate-primary))";
       }
-      // Mark sorted element
       arr[n - i - 1].color = "hsl(var(--intermediate-accent))";
       setArray([...arr]);
     }
 
-    // Mark first element as sorted
     arr[0].color = "hsl(var(--intermediate-accent))";
     setArray([...arr]);
     setIsSorting(false);
@@ -101,10 +135,25 @@ const BubbleSortVisualizer = () => {
           </p>
         </div>
 
+        {/* User Input */}
+        <Card className="bg-intermediate-card border-2 border-intermediate-primary/20 p-6 mb-6">
+          <label className="block mb-2 text-intermediate-text/80 font-medium">
+            Enter numbers separated by commas (e.g., 10, 45, 23, 67):
+          </label>
+          <input
+            type="text"
+            value={inputValues}
+            onChange={handleInputChange}
+            onKeyDown={handleInputSubmit}
+            disabled={isSorting}
+            className="w-full p-3 rounded-lg bg-intermediate-primary/10 text-intermediate-text border border-intermediate-primary/30 focus:outline-none focus:ring-2 focus:ring-intermediate-primary"
+            placeholder="Enter custom array and press Enter..."
+          />
+        </Card>
+
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Visualization Area */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Array Visualization */}
             <Card className="bg-intermediate-card border-2 border-intermediate-primary/20 p-8">
               <div className="flex items-end justify-center h-80 gap-2">
                 {array.map((bar, idx) => (
@@ -134,6 +183,7 @@ const BubbleSortVisualizer = () => {
                     {isSorting ? <Pause className="mr-2 h-4 w-4" /> : <Play className="mr-2 h-4 w-4" />}
                     {isSorting ? "Running..." : "Start"}
                   </Button>
+
                   <Button
                     onClick={generateArray}
                     disabled={isSorting}
@@ -142,6 +192,16 @@ const BubbleSortVisualizer = () => {
                   >
                     <RotateCcw className="mr-2 h-4 w-4" />
                     New Array
+                  </Button>
+
+                  <Button
+                    onClick={stopSorting}
+                    disabled={!isSorting}
+                    variant="destructive"
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                  >
+                    <Square className="mr-2 h-4 w-4" />
+                    Stop
                   </Button>
                 </div>
 
@@ -177,9 +237,8 @@ const BubbleSortVisualizer = () => {
             </Card>
           </div>
 
-          {/* Info Panel */}
+          {/* Right Info Panel */}
           <div className="space-y-6">
-            {/* Stats */}
             <Card className="bg-intermediate-card border-2 border-intermediate-primary/20 p-6">
               <h3 className="text-lg font-bold mb-4 text-intermediate-text">Statistics</h3>
               <div className="space-y-4">
@@ -211,7 +270,6 @@ const BubbleSortVisualizer = () => {
               </div>
             </Card>
 
-            {/* Complexity */}
             <Card className="bg-intermediate-card border-2 border-intermediate-primary/20 p-6">
               <h3 className="text-lg font-bold mb-4 text-intermediate-text">Complexity Analysis</h3>
               <div className="space-y-3">
@@ -231,51 +289,6 @@ const BubbleSortVisualizer = () => {
                   <span className="text-sm text-intermediate-text/70">Space</span>
                   <code className="text-sm font-mono text-intermediate-accent">O(1)</code>
                 </div>
-              </div>
-            </Card>
-
-            {/* Color Legend */}
-            <Card className="bg-intermediate-card border-2 border-intermediate-primary/20 p-6">
-              <h3 className="text-lg font-bold mb-4 text-intermediate-text">Legend</h3>
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded" style={{ backgroundColor: "hsl(var(--intermediate-primary))" }} />
-                  <span className="text-sm text-intermediate-text/70">Unsorted</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded" style={{ backgroundColor: "hsl(var(--intermediate-accent))" }} />
-                  <span className="text-sm text-intermediate-text/70">Comparing / Sorted</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-6 h-6 rounded" style={{ backgroundColor: "hsl(var(--intermediate-secondary))" }} />
-                  <span className="text-sm text-intermediate-text/70">Swapping</span>
-                </div>
-              </div>
-            </Card>
-
-            {/* Resources */}
-            <Card className="bg-intermediate-card border-2 border-intermediate-primary/20 p-6">
-              <div className="flex items-center mb-4">
-                <BookOpen className="h-5 w-5 text-intermediate-primary mr-2" />
-                <h3 className="text-lg font-bold text-intermediate-text">Learn More</h3>
-              </div>
-              <div className="space-y-2">
-                <a
-                  href="https://www.youtube.com/watch?v=xli_FI7CuzA"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-sm text-intermediate-primary hover:underline"
-                >
-                  📹 Bubble Sort Explained
-                </a>
-                <a
-                  href="https://www.geeksforgeeks.org/bubble-sort/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block text-sm text-intermediate-primary hover:underline"
-                >
-                  📚 GeeksforGeeks Guide
-                </a>
               </div>
             </Card>
           </div>

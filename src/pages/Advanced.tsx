@@ -30,7 +30,7 @@ const algorithms = [
   },
   {
     id: "graph-traversal",
-    title: "DFS & BFS",
+    title: "DFS",
     description: "Explore graph traversal strategies with animated node visits",
     complexity: "O(V + E)",
     difficulty: "Hard",
@@ -58,7 +58,7 @@ const Advanced = () => {
 
         <div className="mb-12 text-center">
           <h1 className="text-4xl sm:text-5xl font-bold mb-4 bg-gradient-to-r from-advanced-neon-cyan via-advanced-neon-purple to-advanced-neon-pink bg-clip-text text-transparent animate-glow">
-            🚀 Advanced Level
+             Advanced Level
           </h1>
           <p className="text-xl text-advanced-text/80 max-w-2xl mx-auto">
             Conquer complex algorithms with cutting-edge graph animations and real-time complexity analysis
